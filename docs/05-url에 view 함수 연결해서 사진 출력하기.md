@@ -136,7 +136,7 @@ urlpatterns += patterns('image.views',
 )
 ```
 
-다른 `prefix`를 지정한 `patterns` 함수를 실행하고, 그 결과값을 `urlpatterns`에 덧이으면 됩니다. `urlpatterns`가 `list` 자료형이니 `urlpatterns.append( ... )` 이렇게 추가해도 됩니다.
+다른 `prefix`를 지정한 `patterns` 함수를 실행하고, 그 결과값을 `urlpatterns`에 덧이으면 됩니다. `urlpatterns`가 `list` 자료형이니 `urlpatterns.extend( ... )` 이렇게 추가해도 됩니다.
 
 기왕 기계가 할 일을 사람이 하지 않고 기계가 하도록 한 김에 좀 더 간결히 줄여보겠습니다. 
 
