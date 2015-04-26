@@ -260,7 +260,7 @@ class Photo(models.Model):
 
 강좌 6편을 마칩니다. 5편과 6편 사이에 6개월이 흘렀네요. 그동안 Django는 1.8판이 나왔고, Python과 Django 입문자를 대상으로 오프라인 강의도 두 차례 했으며, 저는 딸바보가 되었습니다. 딸이 첫 돌을 맞이하기 전에 이 강좌 연재를 완주하면 좋겠습니다. :)
 
-* [6편까지 진행한 전체 소스 코드](https://github.com/hannal/start_with_django_webframework/tree/06-fullsource/pystagram)
+* [6편까지 진행한 전체 소스 코드](https://github.com/hannal/start_with_django_webframework/tree/05-fullsource/pystagram)
 
 ----
 
