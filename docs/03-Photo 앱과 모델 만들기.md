@@ -1,6 +1,6 @@
 # 3. Photo 앱과 모델 만들기
 
-* 마지막 갱신일시 : 2014년 09월 15일 2시 5분
+* 마지막 갱신일시 : 2015년 4월 25일 21시 10분
 
 이 강좌를 연재하는 중에 Django 1.7이 정식 출시됐습니다. 다행히(?) Django를 본격 다루기 전이니 이번 편부터 Django 1.7판을 기준으로 작성하겠습니다. 
 
@@ -225,7 +225,7 @@ Django에서 모델의 속성(attribute)은 데이터베이스 필드(field)로 
 
 어쨌든 데이터베이스 시스템에 따라서 `TextField` 필드의 길이제한 단위가 무시무시한데, 굳이 저렇게 긴 문자열을 저장하진 않을 겁니다. 안 예쁘잖아요. 최대 길이를 500자로 제한하겠습니다. `CharField`와 `TextField` 둘 다 `max_length`라는 필드 옵션으로 최대 문자열 길이를 제한하며, `CharField`는 `max_length` 필드 옵션을 반드시 넣어야 합니다. 
 
-`created_at`은 Photo 모델이 생성되어 데이터베이스에 저장되는 시각을 담는데, Django에는 날짜를 다루는 `DateField`, 시간을 다루는 `TimeField`, 그리고 날짜와 시간을 같이 다루는 `DateTimeField`가 있습니다. 생성일시 정보를 다루니 `DateTimeField`를 쓰겠습니다. 이 필드에는 `auto_now` 옵션과 `auto_now_add` 옵션이 있는데, 자동으로 현재 시간 정보를 담을 지 여부를 `True`와 `False`로 지정합니다. `auto_now_add`는 객체가 처음 생성될 때, `auto_now`는 객체가 저장될 때 자동으로 시간 정보를 담습니다. `auto_now`는 `False`, `auto_now_add`는 `True`로 설정한다면, 데이터가 처음 저장되는 시간 정보만 잡히고, 이후에 그 데이터를 수정하여 저장하더라도 자동으로 시간 정보가 담기진 않겠지요. 코드로 표현한다면 이런 모습일 겁니다.
+`created_at`은 Photo 모델이 생성되어 데이터베이스에 저장되는 시각을 담는데, Django에는 날짜를 다루는 `DateField`, 시간을 다루는 `TimeField`, 그리고 날짜와 시간을 같이 다루는 `DateTimeField`가 있습니다. 생성일시 정보를 다루니 `DateTimeField`를 쓰겠습니다. 이 필드에는 `auto_now` 옵션과 `auto_now_add` 옵션이 있는데, 자동으로 현재 시간 정보를 담을 지 여부를 `True`와 `False`로 지정합니다. `auto_now_add`는 객체가 처음 생성될 때, `auto_now`는 객체가 저장될 때 자동으로 시간 정보를 담습니다. `auto_now_add`만 `True`로 설정한다면, 데이터가 처음 저장되는 시간 정보만 잡히고, 이후에 그 데이터를 수정하여 저장하더라도 자동으로 시간 정보가 담기진 않겠지요. 코드로 표현한다면 이런 모습일 겁니다.
 
 ```python
 from datetime import datetime
@@ -239,6 +239,16 @@ if the_photo.is_created is True:
 
 저 두 옵션을 활용하면 이런 코드를 생략하는 것이니 깔끔하고 편하지요.
 
+주의할 점은 Django 1.8부터는 이 두 필드 옵션을 함께 사용하면 안 됩니다. 1.8판 이전에는 다음과 같이 시간 필드 옵션을 설정했습니다.
+
+- 최초 생성 일시 : `auto_now_add=True`, `auto_now_add=False`
+- 매 변경 일시 : `auto_now_add=True`, `auto_now=True`
+
+Django 1.8판부터는 다음과 같이 사용합니다.
+
+- 최초 생성 일시 : `auto_now_add=True`
+- 매 변경 일시 : `auto_now=True`
+
 마지막으로 `id`는 값이 겹치지 않는 색인이며, 이 값이 각 사진을 구분 짓는 고유값입니다. Django에서는 `id`라는 필드를 따로 정하지 않으면 관례에(conventional) 따라 `AutoField`로 `id`를 Django framework가 알아서(자동으로) 만들어 다룹니다. 그러니 우리는 굳이 `id`를 정의하지 않아도 됩니다.
 
 자, 이제 그냥 클래스 속성으로 구성된 기존 `Photo` 모델을 Django 모델로 바꿔 보겠습니다. 아참, 이 필드들은 `models` 모듈에 있습니다.
@@ -248,7 +258,7 @@ class Photo(models.Model):
     image_file = models.ImageField()
     filtered_image_file = models.ImageField()
     description = models.TextField(max_length=500)
-    created_at = models.DateTimeField(auto_now_add=True, auto_now=False)
+    created_at = models.DateTimeField(auto_now_add=True)
 ```
 
 ##### 데이터베이스에 반영 (migration)

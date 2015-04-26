@@ -1,6 +1,6 @@
 # 4. Photo 모델로 Admin 영역에서 데이터 다루기
 
-* 마지막 갱신일시 : 2014년 10월 5일 3시 15분
+* 마지막 갱신일시 : 2015년 4월 26일 21시 10분
 
 이번 편에서는 Django framework이 제공하는 Admin 기능을 이용하여 Photo 모델로 데이터를 추가하거나 내용을 고치거나 삭제해 보겠습니다.
 
@@ -78,7 +78,7 @@ class Photo(models.Model):
     image_file = models.ImageField()
     filtered_image_file = models.ImageField()
     description = models.TextField(max_length=500, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True, auto_now=False)
+    created_at = models.DateTimeField(auto_now_add=True)
 ```
 
 데이터베이스에 반영하는 방법은 `manage.py`의 `makemigrations`과 `migrate` 명령어를 이용하면 됩니다.
@@ -174,7 +174,7 @@ class Photo(models.Model):
     image_file = models.ImageField(upload_to='static_files/uploaded/%Y/%m/%d')
     filtered_image_file = models.ImageField(upload_to='static_files/uploaded/%Y/%m/%d')
     description = models.TextField(max_length=500, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True, auto_now=False)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def delete(self, *args, **kwargs):
         self.image_file.delete()
