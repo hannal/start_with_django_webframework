@@ -3,8 +3,14 @@ from django.contrib import admin
 from django.conf.urls.static import static
 from django.conf import settings
 
-urlpatterns = patterns('',
-    url(r'^photo/(?P<photo_id>\d+)$', 'photo.views.single_photo', name='view_single_photo'),
+urlpatterns = patterns(
+    '',
+    url(
+        r'^photo/(?P<photo_id>\d+)/$',
+        'photo.views.single_photo',
+        name='view_single_photo'
+    ),
+    url(r'^photo/upload/$', 'photo.views.new_photo', name='new_photo'),
     url(r'^admin/', include(admin.site.urls)),
 )
 

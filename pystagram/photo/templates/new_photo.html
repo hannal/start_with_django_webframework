@@ -1,0 +1,36 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<form
+    method="POST"
+    action="{% url 'new_photo' %}"
+    enctype="multipart/form-data"
+>
+    {% csrf_token %}
+
+    {{form.as_p}}
+
+    {% comment %}
+    <!-- {% comment %} 템플릿 태그는 템플릿의 블록 주석입니다. -->
+    <!-- 이 템플릿 태그 안에 있는 모든 내용은 화면에 출력되지 앟습니다. -->
+
+    {% for field in form %}
+    <p>
+        {% if field.errors %}
+        <ul>
+            {% for error in field.errors %}
+            <li>{{error}}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        {{field}}
+    </p>
+    {% endfor %}
+    {% endcomment %}
+
+    <p>
+        <input type="submit" />
+    </p>
+</form>
+{% endblock %}
