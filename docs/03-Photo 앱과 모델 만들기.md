@@ -1,8 +1,10 @@
 # 3. Photo 앱과 모델 만들기
 
-* 마지막 갱신일시 : 2015년 4월 25일 21시 10분
+* 마지막 갱신일시 : 2015년 9월 26일 21시 10분
 
 이 강좌를 연재하는 중에 Django 1.7이 정식 출시됐습니다. 다행히(?) Django를 본격 다루기 전이니 이번 편부터 Django 1.7판을 기준으로 작성하겠습니다. 
+
+그런데 강좌를 연재하는 중에 1.8판이 정식 출시됐습니다. 대체로 기존 코드로도 별 문제 없지만, 일부 설정 항목이 1.8판에서 바뀌어 손을 봐야 합니다. 자세한 내용은 본 편의 “부록-(3)”에서 다룹니다.
 
 ### 1. Django Project와 App
 
@@ -315,6 +317,53 @@ Django는 Model, Template, View의 앞자를 따서 MTV 패턴을 따릅니다. 
 표현물을 먼저 만드는 이유는 사용 경험 수단을 만들어서 겪어보고, 그러면서 저 스스로 만들 대상을 실체화하는 데 좋기 때문입니다. 왜(why) 만드는지 고민하는 것이지요. 실체화(구체화)가 되면 모델을 구상합니다. 모델도 행위를 중심으로 구상합니다. 어떤 정보(데이터)가 있는지는 정보를 어떻게 보일 것인지 고민하면 얼개를 짤 수 있습니다. 그리고 보여진 데이터로 어떤 행위를 할 수 있는지 생각하면 데이터 간 관계, 연관 데이터를 예상할 수 있습니다. 어떻게(how) 목표에 달성하는지 고민한 것입니다. 그런 과정을 얼추 마치면 방법(how)에 필요한 재료를 제한합니다. 물론 만들면서 그때 그때 필요한 재료를 추가하거나 필요없는 재료를 빼기도 합니다.
 
 이렇게 하는 이유는 이런 개발 과정이 재밌어서 그렇습니다. 취향이자 성향이지요. 이 강좌를 보시는 여러분의 취향이나 성향, 철학은 각양각색이니 제 취향과 성향대로 개발하고 설명해 나가겠습니다. ^^
+
+#### (3) Django 1.8에서 변경된 settings.py 설정 항목
+
+가장 큰 변화는 `settings.py`에서 템플릿 설정이 `TEMPLATES` 설정 항목으로 옮겨진 점입니다. 1.7까지는 템플릿 설정이 대개 다음과 같은 형식이었습니다.
+
+```
+TEMPLATE_DIRS = (
+    os.path.join(BASE_DIR, 'templates'),
+)
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.debug',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.media',
+    'django.core.context_processors.static',
+    'django.core.context_processors.tz',
+    'django.core.context_processors.request',
+    'django.contrib.messages.context_processors.messages',
+)
+```
+
+그러나 1.8에서는 다음과 같이 설정합니다.
+
+```
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, 'templates'), ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+```
+
+템플릿 컨텍스트 처리기(`TEMPLATE_CONTEXT_PROCESSORS`) 설정이 `OPTIONS`의 `context_processors`로 이동하였고, 템플릿 파일 경로는 `TEMPLATE_DIRS`에서 `DIRS`로 이동하였습니다.
+
+이런 변화는 Django 1.8부터 Django 내장 템플릿 엔진 뿐만 아니라 다른 템플릿 엔진도 사용 가능해지면서 생겼습니다. 기존에는 Django 내장 템플릿 엔진 하나만 사용한다는 전제로 구성된 설정 항목이었기 때문이지요.
+
+각 설정에 대해서는 템플릿을 자세히 다루는 편에서 설명하도록 하고, 여러분도 기존 `TEMPLATE_DIRS`, `TEMPLATE_DEBUG`, `TEMPLATE_CONTEXT_PROCESSORS` 설정 항목을 지우고 위와 같이 추가하시길 바랍니다.
 
 --------
 

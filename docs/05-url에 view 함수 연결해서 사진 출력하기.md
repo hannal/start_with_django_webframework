@@ -1,5 +1,7 @@
 ## 5. url에 view 함수 연결해서 사진 출력하기
 
+* 마지막 갱신일시 : 2015년 9월 26일 21시 10분
+
 이번 편에서는 인터넷 주소에 접속하여 Photo 모델로 올린 사진 데이터를 가져와서 View 기능을 이용하여 웹 브라우저에 관련 내용을 출력해보겠습니다.
 
 ### 1. URL에 Photo View 연결
@@ -341,6 +343,7 @@ def single_photo(request, photo_id, hidden=False):
     return HttpResponse(loader.render_to_string(*args, **kwargs),
         **httpresponse_kwargs)
 ```
+Python 2의 기본 문자형(charset)이 ascii이기 때문에 Python 2를 쓰는 이상 유니코드와 관련된 고통은 감수해야 합니다. :) 아, 이런 문제는 Python 3에선 발생하지 않습니다.
 
 #### (3) 소스 파일에 한글을 입력하니 오류가 떠요!
 
@@ -348,8 +351,63 @@ def single_photo(request, photo_id, hidden=False):
 
 이 문제는 Python 모듈(파일)에 ascii 문자의 표현 범위를 벗어나는 한글이나 한자 같은 문자가 포함되면 Python 인터프리터가 “어?! 이 문자 뭐임? 몰라, 무서워. 뱉어”라며 Syntax 예외를 일으켜서 발생합니다. 이 문제를 예방하려면 소스 파일에 ascii 문자만 입력하거나 [소스 파일이 어떤 문자형(charset)으로 작성됐는지 Python 인터프리터에게 알려줘야 합니다](http://legacy.python.org/dev/peps/pep-0263/). 그 알려주는 방법이 소스 파일 상단에 `# coding: utf-8`를 명기한 것이지요. Emacs 같은 편집기를 위해 `# -*- coding: utf-8 -*-` 라고 명기하기도 합니다. 
 
-Python 2의 기본 문자형(charset)이 ascii이기 때문에 Python 2를 쓰는 이상 유니코드와 관련된 고통은 감수해야 합니다. :) 아, 이런 문제는 Python 3에선 발생하지 않습니다.
 
+#### (4) Django 1.8에서 urls.py 변화
+
+Django 1.8부터 공식 문서에서는 `patterns` 함수를 더이상 사용하지 않고 리스트 객체로 바로 URL 패턴을 담습니다.
+
+```
+urlpatterns = patterns('',
+    url( ... ),
+)
+```
+
+1.7판까지만 해도 본 강좌에서도 설명한 것처럼 이렇게 URL 패턴을 만들어 등록해왔는데, 1.8판부터는 다음과 같이 다룹니다.
+
+```
+urlpatterns = [
+    url( ... ),
+]
+```
+
+`patterns()` 함수가 반환하는 객체로 리스트형이며 이 함수는 여전히 존재하지만, 공식 문서에서 `patterns()` 함수를 사용하는 예제를 뺀 것을 보면 이젠 이 함수 사용을 권장하지 않나 봅니다. 이에 따라 본 강좌에서 만든 `urls.py` 내용을 다음과 같이 변경합니다.
+
+```
+from django.conf.urls import include, url
+from django.contrib import admin
+from django.conf.urls.static import static
+from django.conf import settings
+
+urlpatterns = [
+    url(
+        r'^photo/(?P<photo_id>\d+)/$',
+        'photo.views.single_photo',
+        name='view_single_photo'
+    ),
+    url(r'^photo/upload/$', 'photo.views.new_photo', name='new_photo'),
+    url(r'^admin/', include(admin.site.urls)),
+    url(
+        r'^accounts/login/',
+        'django.contrib.auth.views.login',
+        name='login',
+        kwargs={
+            'template_name': 'login.html'
+        }
+    ),
+    url(
+        r'^accounts/logout/',
+        'django.contrib.auth.views.logout',
+        name='logout'
+    ),
+]
+
+if settings.DEBUG:
+    urlpatterns += static(
+        settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
+    )
+```
+
+추측컨데, `url()` 함수에 `name` 인자, `include()` 함수에 `namespace` 인자를 이용해 URL 패턴에 이름공간과 이름을 부여하고, 이 이름공간 경로로 URL 패턴을 찾는 걸 권장할 것으로 보입니다. 이에 대해서는 별도 편에서 자세히 다루겠습니다.
 
 --------
 
