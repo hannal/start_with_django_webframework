@@ -3,6 +3,8 @@ from django.contrib import admin
 from django.conf.urls.static import static
 from django.conf import settings
 
+from profiles.urls import urlpatterns as profile_urls
+
 urlpatterns = [
     url(
         r'^photo/(?P<photo_id>\d+)/$',
@@ -23,6 +25,10 @@ urlpatterns = [
         r'^accounts/logout/',
         'django.contrib.auth.views.logout',
         name='logout'
+    ),
+    url(
+        r'^user/',
+        include(profile_urls, namespace='profiles'),
     ),
 ]
 
