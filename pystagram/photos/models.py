@@ -12,6 +12,9 @@ class Photo(models.Model):
     content = models.TextField(max_length=500, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ('-created_at', '-pk', )
+
     def delete(self, *args, **kwargs):
         self.image.delete()
         self.filtered_image.delete()
