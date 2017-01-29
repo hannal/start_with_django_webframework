@@ -316,7 +316,7 @@ Django는 Model, Template, View의 앞자를 따서 MTV 패턴을 따릅니다. 
 
 이것으로 강좌 3편을 마칩니다. 모델을 만들고 데이터를 실제로 저장하는 부분까지 하려 했는데, 분량이 많아져서 3편을 여기서 끊네요. 4편에서는 꼭 데이터를 저장하고 꺼내 봅시다! :)
 
-* [3편까지 진행한 전체 소스 코드](https://github.com/hannal/start_with_django_webframework/tree/03-fullsource/pystagram)
+* [3편까지 진행한 전체 소스 코드](https://github.com/hannal/start_with_django_webframework/tree/l03)
 
 -----
 
