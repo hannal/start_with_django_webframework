@@ -25,7 +25,11 @@ urlpatterns = [
     url(
         r'^accounts/logout/',
         auth_views.logout,
-        name='logout'
+        name='logout',
+        kwargs={
+            'next_page': settings.LOGIN_URL,
+        }
+
     ),
 ]
 
