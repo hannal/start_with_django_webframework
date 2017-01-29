@@ -1,0 +1,18 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<form
+    method="POST"
+    action=""
+    enctype="multipart/form-data"
+>
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <p>
+        <button type="submit">저장</button>
+    </p>
+</form>
+
+{% endblock %}
+
