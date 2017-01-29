@@ -1,4 +1,5 @@
 from django.conf.urls import url
+from django.conf.urls import include
 from django.contrib import admin
 from django.conf.urls.static import static
 from django.conf import settings
@@ -13,6 +14,8 @@ urlpatterns = [
     url(r'^hello/$', hello),
     url(r'^photos/(?P<pk>[0-9]+)/$', detail, name='detail'),
     url(r'^photos/upload/$', create, name='create'),
+    url(r'^users/', include('profiles.urls')),
+
     url(r'^admin/', admin.site.urls),
     url(
         r'^accounts/login/',
