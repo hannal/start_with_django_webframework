@@ -1,5 +1,7 @@
 ## 6. Django 정적 파일 기능 이해하기
 
+* 마지막 갱신일시 : 2017년 1월 29일 22시 30분
+
 지난 5회에서 다룬 정적 파일을 Django에서 어떻게 다루는지 자세히 알아 보겠습니다.
 
 ### 1. Django와 정적 파일
@@ -8,7 +10,7 @@
 
 웹 게시판이나 블로그, 또는 우리가 만들 Pystagram은 웹 프로그램 또는 웹 애플리케이션입니다. 이런 웹 애플리케이션이 필요한 이유는 뭘까요?
 
-웹 서버는 웹 클라이언트가 특정 위치에(URL) 있는 서버 저장소(storage)에 있는 자원(resource)을 요청(HTTP request) 받아서 제공(serving)하는 응답(HTTP response) 처리가 기본 동작입니다. 이러한 기본 동작은 자원과 접근 가능한 주소가 정적으로 연결된 관계입니다. PC 스토리지의 `/Users/hannal/Pictures/private_photo.png` 경로에 사진 파일이 있다고 예를 들면, 파일 경로는 웹 주소이고 사진 파일은 자원입니다. 사진 파일을 읽어 들여 보거나 수정하거나 지우는 행위는 HTTP method(GET, POST, PUT, DELETE 등)로 표현합니다. 정리하면 웹 서버는 요청받은 URL과 방식으로 서버에 존재하는 자원을 제공하며, 이 동작을 정적 자원(static resource)을 제공하는 것입니다.
+웹 서버는 웹 클라이언트가 특정 위치에(URL) 있는 서버 저장소(storage)에 있는 자원(resource)을 요청(HTTP request) 받아서 제공(serving)하는 응답(HTTP response) 처리가 기본 동작입니다. 이러한 기본 동작은 자원과 접근 가능한 주소가 정적으로 연결된 관계입니다. PC 스토리지의 `/Users/hannal/Pictures/private_photo.png` 경로에 사진 파일이 있다고 예를 들면 파일 경로는 웹 주소이고 사진 파일은 자원입니다. 사진 파일을 읽어 들여 보거나 수정하거나 지우는 행위는 HTTP method(GET, POST, PUT, DELETE 등)로 표현합니다. 정리하면 웹 서버는 요청받은 URL과 방식으로 서버에 존재하는 자원을 제공하며, 이 동작을 정적 자원(static resource)을 제공하는 것입니다.
 
 그런데 사진 파일 자체를 제공하는 데 그치지 않고, 사진에 설명도 달고 댓글도 단다면 자원(사진, 본문, 댓글 등)을 정적으로 제공하는 건 그다지 효율성이 좋지 않습니다. 본문을 수정하거나 댓글을 단다는 건 내용물이 고정되어 있지 않고 언제든지 변하는 상황인데, 언제든지 가변하는 내용물을 고정된 자원으로 제공하려면 내용물이 바뀔 때마다 고정된 자원도 매번 바꿔서 정적인 상태로 만들어야 합니다[^1].
 
@@ -18,13 +20,13 @@
 
 #### Django는 정적 파일을 제공하는 실 서비스용 기능을 제공하지 않는다
 
-Django는 실 서비스 환경에서 사용할 정적 파일을 제공하는 기능을 제공하지 않습니다. 서버에 저장된 정적 파일을 읽어들여서 그대로 웹 클라이언트에 보내기만 하면 그만인 단순한 기능인데도 Django는 그런 기능을 제공하지 않습니다. 왜냐하면 그럴 필요가 없기 때문인데, 앞서 설명한 바와 같이 그런 작업에 대해서는 웹 서버가 전문가이기 때문입니다.
+Django는 실 서비스 환경에서 사용할 정적 파일을 제공하는 기능을 제공하지 않습니다. 서버에 저장된 정적 파일을 읽어들여서 그대로 웹 클라이언트에 보내기만 하면 그만인 단순한 기능인데도 Django는 그런 기능을 제공하지 않습니다. 왜냐하면 그럴 필요가 없기 때문인데, 앞서 설명한 바와 같이 정적 파일을 제공하는 건 웹 서버 전문 영역이기 때문입니다.
 
 ![](06-webserver-static_resources.png)
 
 게다가 웹 애플리케이션은 웹 서버와 연결하는 중간 인터페이스를 거치므로 효율이 더 떨어집니다.
 
-하지만, 개발 상황인 경우는 효율보다는 기능(역할)이 중요한 경우가 많습니다. 정적 파일이 제대로 제공되는지 확인하려고 항상 웹 서버를 구동할 필요는 없습니다. Django는 개발 단계에서 쓸 정적 파일 제공 기능을 제공합니다. 성능은 웹 서버가 직접 정적 파일을 제공하는 것 보다 떨어지지만 정적 파일 제공에 필요한 기능은 대부분 지원합니다.
+하지만 개발 상황인 경우는 효율보다는 기능(역할)이 중요한 경우가 많습니다. 정적 파일이 제대로 제공되는지 확인하려고 항상 웹 서버를 구동할 필요는 없습니다. Django는 개발 단계에서 쓸 정적 파일 제공 기능을 제공합니다. 성능은 웹 서버가 직접 정적 파일을 제공하는 것 보다 떨어지지만 정적 파일 제공에 필요한 기능은 대부분 지원합니다.
 
 #### Static file과 Media file
 
@@ -147,7 +149,7 @@ STATIC_URL = '/assets/'
 `settings.py`에 다음과 같이 `STATIC_ROOT` 설정 항목을 추가합니다.
 
 ```
-STATIC_ROOT = os.path.join(BASE_DIR, 'collected_statics')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 ```
 
 `list`나 `tuple`형인 `STATICFILES_DIRS`와는 달리 문자열 경로를 할당합니다. 이제 `collectstatic` 명령어로 현 프로젝트가 사용하는 모든 정적 파일을 모읍니다.
@@ -156,13 +158,13 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'collected_statics')
 $ python manage.py collectstatic
 ```
 
-지정한 경로에 있는 기존 파일을 전부 덮어 쓰는데 정말로 모을 거냐고 묻습니다. 원본 파일을 덮어 쓰는 게 아니니 `yes`라고 입력합니다. 정적 파일을 모을 경로를 `manage.py` 파일이 있는 경로에 `collected_statics` 디렉터리로 지정했으므로 이 디렉터리가 만들어지고, 이 안에 사용하는 모든 정적 파일이 **복사**됩니다. 이 디렉터리 안을 보면 `STATICFILES_DIRS`에 넣은 경로들 중 `byebye`라는 접두사를 붙인 디렉터리도 보입니다. 마음으로 “hi”라고 인사 보내셨다면 당신은 친절한 사람. :)
+지정한 경로에 있는 기존 파일을 전부 덮어 쓰는데 정말로 모을 거냐고 묻습니다. 원본 파일을 덮어 쓰는 게 아니니 `yes`라고 입력합니다. 정적 파일을 모을 경로를 `manage.py` 파일이 있는 경로에 `staticfiles` 디렉터리로 지정했으므로 이 디렉터리가 만들어지고, 이 안에 사용하는 모든 정적 파일이 **복사**됩니다. 이 디렉터리 안을 보면 `STATICFILES_DIRS`에 넣은 경로들 중 `byebye`라는 접두사를 붙인 디렉터리도 보입니다.
 
 이렇게 정적 파일을 모아놓은 `STATIC_ROOT`는 Django가 직접 접근하진 않습니다. Django가 접근하여 다루는 설정은 `STATICFILES_DIRS`이며, `STATIC_ROOT`는 정적 파일을 직접 제공(serving)할 웹 서버가 접근합니다. `collectstatic` 명령어를 수행하면 `STATICFILES_DIRS`나 앱 디렉터리에 있는 `static` 디렉터리 안에 있는 파일을 `STATIC_ROOT`에 모으는데, `STATICFILES_DIRS`에 지정된 경로인 경우 따로 명시한 접두사으로 디렉터리를 만들어 그 안에 파일을 복사하고, 앱 디렉터리에 있는 `static` 디렉터리인 경우는 앱 이름으로 디렉터리를 만들어 그 안에 `static` 디렉터리 안에 있는 파일을 복사합니다. 즉, 개발 단계(`DEBUG = True`)에서는 정적 파일 URL 경로가 논리 개념이고, 서비스 환경(`DEBUG = False`)에서는 실제 물리 개념인 정적 파일 URL 경로가 되는 것입니다.
 
 그렇다면 경로가 동일해서 우선순위가 발생하는 경우에 `collectstatic`을 수행하면 어떤 파일이 실제로 복사될까요? 물론 1순위 경로에 위치한 파일이 복사됩니다. `photo/js/jquery-2.1.3.min.js` 파일을 열어서 내용을 몽땅 지워서 0 byte 파일로 만들고, `collected_static` 디렉터리를 지운 뒤에 다시 `collectstatic` 명령어를 실행해 보세요. `collected_static` 디렉터리 안의 `js` 디렉터리 안에 있는 `jquery-2.1.3.min.js` 파일을 보면 0 byte인 `photo/js/jquery-2.1.3.min.js`이 아닌 정상 파일인 `js/jquery-2.1.3.min.js`이 복사되어 있습니다.
 
-주의할 점. `STATIC_ROOT` 경로는 `STATICFILES_DIRS` 등록된 경로와 같은 경로가 있어서는 안 됩니다. 남들이 잘 안 쓸만한 이상한 이름(`collected_statics`?)을 쓰세요.
+주의할 점. `STATIC_ROOT` 경로는 `STATICFILES_DIRS` 등록된 경로와 같은 경로가 있어서는 안 됩니다. 남들이 잘 안 쓸만한 이상한 이름(`staticfiles`?)을 쓰세요.
 
 #### `'django.contrib.staticfiles'`
 
@@ -215,52 +217,42 @@ Media file은 이용자가 웹에서 업로드한 정적 파일입니다. 미리
 
 #### 지난 Media file 관련 코드 수정
 
-지난 5회에서 파일 업로드를 경험해 봤지만, 흐름을 파악하는 데 목표가 있는 코드여서 올바른(?) 코드는 아니었습니다. 이번 6회 강좌로 Django가 정적 파일을 다루는 방식을 이해했으니 지난 번 코드도 보다 적확하게 고치겠습니다.
+지난 5회에서 Media file 관련 설정을 하며 models.py 파일도 고쳤습니다. 이에 대한 내용을 설명하겠습니다. 
 
-먼저 `settings.py`에서 `MEDIA_ROOT` 부분을 고치겠습니다.
-
-```
-MEDIA_ROOT = os.path.join(BASE_DIR, 'static_files')
-```
-
-기존엔 이와 같이 설정했는데, Static file과 혼돈할 여지가 있으니 업로드 파일이 저장될 디렉터리 이름을 `uploaded_files`로 바꾸겠습니다. 그리고, 업로드 URL 경로는 `/uploads/`로 보다 명확하게 표현하겠습니다.
+먼저 `settings.py`에서 `MEDIA_URL`과 `MEDIA_ROOT` 부분을 추가했습니다.
 
 ```
-MEDIA_URL = '/uploads/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'uploaded_files')
+MEDIA_URL = '/upload_files/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 ```
 
-이번엔 `urls.py`에 Media file을 제공(serving)하는 URL 패턴 등록 부분을 고치겠습니다.
+Media file에 접근하는 URL이 `/upload_files/`로 시작하며, 실제 파일이 위치하는 서버 상 경로는 `MEDIA_ROOT`에 할당했습니다.
+
+다음엔 `urls.py`에 Media file을 제공(serving)하는 URL 패턴 등록 부분을 고쳤습니다.
 
 ```
-if settings.DEBUG:
-    urlpatterns += static(
-        settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
-    )
+urlpatterns += static('/upload_files/', document_root=settings.MEDIA_ROOT)
 ```
 
-`'static_files'`을 `settings.MEDIA_URL`로 바꾼 것입니다.
+`static` 함수에 첫 번째 인자로 Media file URL을, 키워드 인자 `document_root`로 Media file이 위치한 경로를 전달했습니다. 
 
-이번엔 `photo` 앱의 `models.py` 파일을 열어서 업로드 된 이미지 파일이 저장될 경로를 지정한 `upload_to` 필드 옵션을 고칩니다.
+마지막으로 `photos` 앱의 `models.py` 파일에서 이미지 파일이 저장될 경로를 지정한 `upload_to` 필드 옵션을 고쳤습니다.
 
 ```
 class Photo(models.Model):
-    image_file = models.ImageField(upload_to='%Y/%m/%d')
-    filtered_image_file = models.ImageField(upload_to='static_files/uploaded/%Y/%m/%d')
-    description = models.TextField(max_length=500, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    image = models.ImageField(upload_to='%Y/%m/%d/orig')
+    filtered_image = models.ImageField(upload_to='%Y/%m/%d/filtered')
     # 후략
 ```
 
-`upload_to='static_files/uploaded/%Y/%m/%d'` 부분에서 `static_files/uploaded/`를 떼버린 것입니다. `static_files`는 이미 `MEDIA_ROOT`에 지정되어 있고, `uploaded`는 업로드 파일을 구분하기 위한 경로였는데 Static file과 Media file이 정적 파일이라는 큰 범주에 속하지만 역할은 다르다는 걸 이번 강좌에서 이해했으므로 더이상 업로드 경로에 넣을 필요가 없습니다.
-
-덤으로 `created_at`도 조금 바뀌었는데, `auto_now` 필드 옵션을 제거 했습니다. Django 1.8판에서는 `auto_now_add`와 `auto_now`를 병행하지 못하도록 정책이 바뀌었거든요.
+`upload_to='uploads/%Y/%m/%d/orig'` 부분에서 `uploads/`를 떼버린 것입니다. `uploads`는 이미 `MEDIA_ROOT`에 지정되어 있으므로 더이상 업로드 경로에 넣을 필요가 없습니다.
 
 --------
 
-강좌 6편을 마칩니다. 5편과 6편 사이에 5개월이 흘렀네요. 그동안 Django는 1.8판이 나왔고, Python과 Django 입문자를 대상으로 오프라인 강의도 두 차례 했으며, 저는 딸바보가 되었습니다. 딸이 첫 돌을 맞이하기 전에 이 강좌 연재를 완주하면 좋겠습니다. :)
+강좌 6편을 마칩니다.
 
-* [6편까지 진행한 전체 소스 코드](https://github.com/hannal/start_with_django_webframework/tree/06-fullsource/pystagram)
+* [6편까지 진행한 전체 소스 코드](https://github.com/hannal/start_with_django_webframework/tree/l06)
 
 ----
 
