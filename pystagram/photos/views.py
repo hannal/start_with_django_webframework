@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 
@@ -23,9 +24,18 @@ def detail(request, pk):
 
 
 def create(request):
-    form = PhotoForm()
+    if request.method == "GET":
+        form = PhotoForm()
+    elif request.method == "POST":
+        form = PhotoForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            obj = form.save()
+            return redirect(obj)
+
     ctx = {
         'form': form,
     }
+
     return render(request, 'edit.html', ctx)
 
