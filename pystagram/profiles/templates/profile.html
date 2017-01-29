@@ -1,6 +1,15 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-profile page
+<h1>{{ user.username }}님의 프로필 페이지</h1>
+
+<ul>
+    {% for photo in user.photo_set.all %}
+        <li><img src="{{photo.image.url}}" /></li>
+    {% empty %}
+        <li>게시한 사진이 없습니다.</li>
+    {% endfor %}
+</ul>
+
 {% endblock %}
 
