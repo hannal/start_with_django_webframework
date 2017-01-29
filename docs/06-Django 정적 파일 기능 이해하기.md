@@ -93,7 +93,7 @@ STATICFILES_DIRS = (
     - js/
 - static2/
     - js/
-- photo/
+- photos/
     - static/
     - static/js/
 
@@ -105,7 +105,7 @@ $ python manage.py findstatic js/jquery-2.1.3.min.js
 $ python manage.py findstatic javascript/jquery-2.1.3.min.js
 ```
 
-충분히 고민하셨으리라 믿습니다. `js/jquery-2.1.3.min.js`를 찾으려 하면 `static` 디렉터리에 있는 것과 `static2` 디렉터리에 있는 것, 그리고 `photo/static` 디렉터리에 있는 것이 나타납니다. 나타난 순서는 `static`, `static2`, `photo/static` 디렉터리 순인데, 이 배치된 순서는 실제로 정적 파일을 찾아다 사용할 때 우선순위로 작용합니다. 이 우선순위는 `STATICFILES_DIRS`에 명기된 디렉터리가 더 상위인데, `STATICFILES_FINDERS`라는 `settings.py` 설정 항목에서 기본 파일 시스템 파인더(finder)가 Django App 디렉터리보다 상위순위로 지정되어 있기 때문입니다.
+충분히 고민하셨으리라 믿습니다. `js/jquery-2.1.3.min.js`를 찾으려 하면 `static` 디렉터리에 있는 것과 `static2` 디렉터리에 있는 것, 그리고 `photos/static` 디렉터리에 있는 것이 나타납니다. 나타난 순서는 `static`, `static2`, `photos/static` 디렉터리 순인데, 이 배치된 순서는 실제로 정적 파일을 찾아다 사용할 때 우선순위로 작용합니다. 이 우선순위는 `STATICFILES_DIRS`에 명기된 디렉터리가 더 상위인데, `STATICFILES_FINDERS`라는 `settings.py` 설정 항목에서 기본 파일 시스템 파인더(finder)가 Django App 디렉터리보다 상위순위로 지정되어 있기 때문입니다.
 
 이와 같이 정적 파일 경로가 일치할 경우 우선순위에 따라 실제 사용하는 정적 파일이 결정됩니다. 실제 물리 경로는 그대로 유지하지만 우선순위 문제를 겪지 않으려면 접두사(prefix)를 붙여서 구분하면 됩니다. `static2`는 이제 곧 지울 항목이니까 `byebye`라는 접두사를 쓰겠습니다.
 
@@ -162,7 +162,7 @@ $ python manage.py collectstatic
 
 이렇게 정적 파일을 모아놓은 `STATIC_ROOT`는 Django가 직접 접근하진 않습니다. Django가 접근하여 다루는 설정은 `STATICFILES_DIRS`이며, `STATIC_ROOT`는 정적 파일을 직접 제공(serving)할 웹 서버가 접근합니다. `collectstatic` 명령어를 수행하면 `STATICFILES_DIRS`나 앱 디렉터리에 있는 `static` 디렉터리 안에 있는 파일을 `STATIC_ROOT`에 모으는데, `STATICFILES_DIRS`에 지정된 경로인 경우 따로 명시한 접두사으로 디렉터리를 만들어 그 안에 파일을 복사하고, 앱 디렉터리에 있는 `static` 디렉터리인 경우는 앱 이름으로 디렉터리를 만들어 그 안에 `static` 디렉터리 안에 있는 파일을 복사합니다. 즉, 개발 단계(`DEBUG = True`)에서는 정적 파일 URL 경로가 논리 개념이고, 서비스 환경(`DEBUG = False`)에서는 실제 물리 개념인 정적 파일 URL 경로가 되는 것입니다.
 
-그렇다면 경로가 동일해서 우선순위가 발생하는 경우에 `collectstatic`을 수행하면 어떤 파일이 실제로 복사될까요? 물론 1순위 경로에 위치한 파일이 복사됩니다. `photo/js/jquery-2.1.3.min.js` 파일을 열어서 내용을 몽땅 지워서 0 byte 파일로 만들고, `collected_static` 디렉터리를 지운 뒤에 다시 `collectstatic` 명령어를 실행해 보세요. `collected_static` 디렉터리 안의 `js` 디렉터리 안에 있는 `jquery-2.1.3.min.js` 파일을 보면 0 byte인 `photo/js/jquery-2.1.3.min.js`이 아닌 정상 파일인 `js/jquery-2.1.3.min.js`이 복사되어 있습니다.
+그렇다면 경로가 동일해서 우선순위가 발생하는 경우에 `collectstatic`을 수행하면 어떤 파일이 실제로 복사될까요? 물론 1순위 경로에 위치한 파일이 복사됩니다. `photos/js/jquery-2.1.3.min.js` 파일을 열어서 내용을 몽땅 지워서 0 byte 파일로 만들고, `collected_static` 디렉터리를 지운 뒤에 다시 `collectstatic` 명령어를 실행해 보세요. `collected_static` 디렉터리 안의 `js` 디렉터리 안에 있는 `jquery-2.1.3.min.js` 파일을 보면 0 byte인 `photos/js/jquery-2.1.3.min.js`이 아닌 정상 파일인 `js/jquery-2.1.3.min.js`이 복사되어 있습니다.
 
 주의할 점. `STATIC_ROOT` 경로는 `STATICFILES_DIRS` 등록된 경로와 같은 경로가 있어서는 안 됩니다. 남들이 잘 안 쓸만한 이상한 이름(`staticfiles`?)을 쓰세요.
 
@@ -172,7 +172,7 @@ $ python manage.py collectstatic
 
 이 함수를 `urls.py`에서 URL 패턴을 만드는 데 사용한 걸 보면 이 함수 자체가 정적 파일을 제공한다기 보다는 정적 파일 URL에 그런 기능을 하는 무언가를 연결할 것이라 예상되지요? 실제로 그렇게 동작합니다. 정적 파일에 접근할 URL 접두사(`staticfiles`)를 첫 번째 인자로 넣고 정적 파일이 위치한 경로를 `document_root`라는 키워드 인자로 전달하면, 이런 내용을 `django.views.static.serve`라는 뷰 함수가 사용합니다. 이 `serve` 함수는 서버에 위치한 파일을 읽어서(`open(fullpath, 'rb')`) 스트리밍 방식으로 응답(`StreamingHttpResponse`)합니다. 실제 파일 서빙을 하는 것입니다. 물론 성능은 웹 서버가 직접 서빙하는 것보다 떨어지므로 개발 단계에서만 쓰는 게 좋을텐데, `django.conf.urls.static`의 `static` 함수는 `settings`의 `DEBUG`가 True인 경우에만 이런 정적 파일 제공에 필요한 URL 패턴을 만듭니다. 간단히 말해서 `DEBUG=True`인 경우에만 `static` 함수는 우리가 원하고 기대하는 동작을 합니다.
 
-그런데 **Static file**은 이런 처리를 하지 않아도 개발 단계에서는 잘 제공(serving)됩니다. Media file(업로드 파일)은 `urls.py`에 `static` 함수를 사용해 정적 파일을 제공하도록 강제했지만, Static file은 그런 처리를 하지 않아도 저절로 제공(serving)됩니다. 이런 **저절로** 동작하는 기능은 Django 프레임워크에 내장된 Django App인 `'django.contrib.staticfiles'`가 맡고 있습니다. `settings.py` 파일을 열어서 `INSTALLED_APPS` 항목을 보면 우리가 앞서 추가한 `'photo'` 외에도 `django.contrib`으로 시작하는 몇 가지가 더 있는데, 그 중에 `'django.contrib.staticfiles'`가 있습니다. `'django.contrib.admin'` 항목을 보니 지난 강좌에서 사용해 본 Django admin 기능도 Django App이라는 걸 알 수 있습니다.
+그런데 **Static file**은 이런 처리를 하지 않아도 개발 단계에서는 잘 제공(serving)됩니다. Media file(업로드 파일)은 `urls.py`에 `static` 함수를 사용해 정적 파일을 제공하도록 강제했지만, Static file은 그런 처리를 하지 않아도 저절로 제공(serving)됩니다. 이런 **저절로** 동작하는 기능은 Django 프레임워크에 내장된 Django App인 `'django.contrib.staticfiles'`가 맡고 있습니다. `settings.py` 파일을 열어서 `INSTALLED_APPS` 항목을 보면 우리가 앞서 추가한 `'photos'` 외에도 `django.contrib`으로 시작하는 몇 가지가 더 있는데, 그 중에 `'django.contrib.staticfiles'`가 있습니다. `'django.contrib.admin'` 항목을 보니 지난 강좌에서 사용해 본 Django admin 기능도 Django App이라는 걸 알 수 있습니다.
 
 `django.contrib.staticfiles` 앱에는 이 앱이 사용하는 URL 패턴을 담은 `urls.py` 파일이 있는데, 이 파일 내용은 다음과 같습니다.
 

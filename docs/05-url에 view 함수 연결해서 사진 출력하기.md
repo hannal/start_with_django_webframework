@@ -58,8 +58,6 @@ urlpatterns = [
 
 끝났습니다. 웹브라우저에서 `http://127.0.0.1:8000/hello/`로 접속하면 `HttpResponse`로 넘긴 문장이 출력되는 걸 보실 겁니다.
 
-![](05-hello_world_by_views.png)
-
 
 #### (3) urls.py
 
@@ -158,8 +156,6 @@ def detail(request, photo_id):
 
 위치 인자이므로 인자 이름은 편한대로 정해도 됩니다. `?P<이름>`을 지정하면 뷰 함수엔 키워드 인자(keyword argument)로 전달되므로 뷰 함수가 전달받는 인자 이름과 일치해야 합니다.
 
-![](05-view_with_photo_id.png)
-
 숫자없이 `/photos/`로 또는 숫자가 아닌 문자가 포함된 주소(가령 `/photos/3-1023/`이나 `/photos/3번/`)로도 접근해보세요. “Page not found (404)” 오류가 출력됩니다. `urls.py`에 지정한 URL 패턴에 해당되는 게 없으면 `404` 오류가 발생합니다.
 
 
@@ -228,11 +224,7 @@ def detail(request, pk):
     )
 ```
 
-웹브라우저로 접속해보세요. 이미지가 출력되지 않습니다. 화면에 출력된 이미지 파일 URL을 서버 호스트 내용과 합쳐서, 그러니까 `http://localhost:8000/uploads/.../` 이런 식으로 만들어서 웹브라우저로 접근해보세요.
-
-![](05-404_without_media_url.png)
-
-`404` 오류가 발생합니다.
+웹브라우저로 접속해보세요. 이미지가 출력되지 않습니다. 화면에 출력된 이미지 파일 URL을 서버 호스트 내용과 합쳐서, 그러니까 `http://localhost:8000/uploads/.../` 이런 식으로 만들어서 웹브라우저로 접근해보세요. `404` 오류가 발생합니다.
 
 Django는 이용자가 업로드한 파일은 `MEDIA_URL`과 `MEDIA_ROOT`라는 설정값을 참조하여 제공(serve)합니다. 모델의 `FileField` 필드 클래스나 `ImageField` 필드 클래스로 지정하는 `upload_to` 인자는 `MEDIA_URL`과 `MEDIA_ROOT` 경로 아래에 위치합니다. 이 두 설정값을 무시하는 것도 가능하지만 운영하는 데 번거롭고 보안에도 좋진 않습니다.
 
@@ -262,11 +254,7 @@ from django.conf.urls.static import static
 urlpatterns += static('static_files', document_root=settings.MEDIA_ROOT)
 ```
 
-자, 끝났습니다. 이제 다시 웹브라우저에서 개별 사진 URL로 접근해보세요.
-
-![](05-view_photo_successfully.png)
-
-404 오류 나던 것이 몇 가지 조치를 취하자 이미지가 잘 나오는데, 이는 정적 파일 처리와 관련된 내용이며 나중에 자세히 다루겠습니다. :)
+자, 끝났습니다. 이제 다시 웹브라우저에서 개별 사진 URL로 접근해보세요. 404 오류 나던 것이 몇 가지 조치를 취하자 이미지가 잘 나오는데, 이는 정적 파일 처리와 관련된 내용이며 나중에 자세히 다루겠습니다. :)
 
 ### 3. 부록
 
