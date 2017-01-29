@@ -62,3 +62,7 @@ docs/_build/
 target/
 
 *env*/
+
+*.swp
+
+uploads/
