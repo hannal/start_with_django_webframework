@@ -251,7 +251,7 @@ class Photo(models.Model):
 from django.conf import settings
 from django.conf.urls.static import static
 
-urlpatterns += static('static_files', document_root=settings.MEDIA_ROOT)
+urlpatterns += static('upload_files', document_root=settings.MEDIA_ROOT)
 ```
 
 자, 끝났습니다. 이제 다시 웹브라우저에서 개별 사진 URL로 접근해보세요. 404 오류 나던 것이 몇 가지 조치를 취하자 이미지가 잘 나오는데, 이는 정적 파일 처리와 관련된 내용이며 나중에 자세히 다루겠습니다. :)
